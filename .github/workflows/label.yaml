@@ -27,7 +27,7 @@ jobs:
 
             if (!hasRequiredLabel) {
               const issue_number = payload.number;
-              const message = '🚨 Please add at least one of the required labels (bug, feature, enhancement) to this PR!';
+              const message = "🚨 Please add at least one of the required labels (bug, feature, enhancement) to this PR\n![cat_angry](https://github.com/ksrnnb/github-action-test/assets/48155865/d3cbff05-6994-488c-bd9a-c1b821083e62)";
               const repo = context.repo.repo;
               const owner = context.repo.owner;
               github.rest.issues.createComment({
