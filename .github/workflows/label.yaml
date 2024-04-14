@@ -1,0 +1,41 @@
+name: Check PR for labels
+
+on:
+  pull_request:
+    types: [opened, labeled, unlabeled, synchronize]
+
+jobs:
+  check-labels:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Check for labels
+        id: labels
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const requiredLabels = ['bug', 'feature', 'enhancement'];
+            const payload = context.payload.pull_request;
+            const labels = payload.labels.map(label => label.name);
+
+            const hasRequiredLabel = labels.some(label => requiredLabels.includes(label));
+
+            if (!hasRequiredLabel) {
+              const issue_number = payload.number;
+              const message = '🚨 Please add at least one of the required labels (bug, feature, enhancement) to this PR!';
+              const repo = context.repo.repo;
+              const owner = context.repo.owner;
+              github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number,
+                body: message
+              });
+              core.setFailed("None of the required labels found on PR.");
+            }
+
+      - name: Label check passed
+        if: ${{ success() }}
+        run: echo "Label check passed. PR has labels."
