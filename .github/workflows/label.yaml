@@ -38,7 +38,3 @@ jobs:
               });
               core.setFailed("None of the required labels found on PR.");
             }
-
-      - name: Label check passed
-        if: ${{ success() }}
-        run: echo "Label check passed. PR has labels."
